@@ -7,6 +7,7 @@ import qualified Data.ByteString.Char8 as B
 import qualified Data.Text.Lazy as T
 import qualified Data.Text as TS
 import qualified Data.Text.IO as TIO
+import qualified Data.Text.Lazy.Encoding as TE
 import Control.Exception (try, SomeException)
 import Control.Monad.IO.Class (liftIO)
 import Network.HTTP.Types.Status
@@ -18,7 +19,7 @@ readSource p = fmap T.pack <$> try (readFile $ "/home/bikeboi/Wazz/dogdunk/serve
 
 -- Transforming data
 updateSource :: (FilePath,T.Text) -> IO (Maybe T.Text)
-updateSource (fp,t) = do res :: Either SomeException () <- try $ TIO.writeFile fp $ T.toStrict t
+updateSource (fp,t) = do res :: Either SomeException () <- try $ TIO.writeFile ("/home/bikeboi/Wazz/dogdunk/server/data/" ++ fp) $ T.toStrict t
                          return $ case res of
                                     Left se -> Just . T.pack . show $ se
                                     Right _ -> Nothing
@@ -49,11 +50,11 @@ routes = do get "/:filename" $ do
               ifExists filename $ text
             put "/:filename" $ do
               filename <- param "filename"
-              ifExists filename
-                $ \s -> do val <- liftIO $ updateSource (filename,s)
-                           case val of
-                             Nothing -> statusOk
-                             Just e -> cantUpdate filename
+              content <- body
+              val <- liftIO $ updateSource (filename,TE.decodeUtf8 content)
+              case val of
+                 Nothing -> statusOk
+                 Just e -> cantUpdate filename
   where fromEither (Left _) = Nothing
         fromEither (Right x) = Just x
 
