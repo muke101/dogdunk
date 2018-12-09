@@ -1,0 +1,15 @@
+name: dogdunk-server
+version: 0.1.0.0
+license: MIT
+
+dependencies:
+  - base
+  - scotty
+  - bytestring
+  - text
+  - http-types
+  
+executables:
+  server:
+    main: Main
+    source-dirs: .

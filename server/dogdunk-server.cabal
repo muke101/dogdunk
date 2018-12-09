@@ -1,0 +1,27 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 48f21b4f9a0cfb1499bcae5f2da08d1a1a0d4711cdab43826a4b190c58818a8f
+
+name:           dogdunk-server
+version:        0.1.0.0
+license:        MIT
+build-type:     Simple
+
+executable server
+  main-is: Main.hs
+  other-modules:
+      Paths_dogdunk_server
+  hs-source-dirs:
+      ./.
+  ghc-options: -main-is Main
+  build-depends:
+      base
+    , bytestring
+    , http-types
+    , scotty
+    , text
+  default-language: Haskell2010
