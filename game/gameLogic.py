@@ -21,7 +21,7 @@ class dog:
 		self.experiance = 0
 		self.userData['experiance'] = self.experiance
 		self.jumpHeight = self.calculateJumpHeight(self.level)
-		requests.put(server+self.userData['userName'], data=json.JSONEncoder().encode(userData))
+		requests.put(server+self.userData['userName'], data=json.JSONEncoder().encode(self.userData))
 
 	def dunk(self, playerData):
 		playerJumpHeight = self.calculateJumpHeight(playerData['level'])
@@ -33,7 +33,7 @@ class dog:
 			if self.experiance >= (30*(self.level**2))/3:
 				self.levelUp()
 			else:
-				requests.put(server+userData['userName'], data=json.JSONEncoder().encode(userData))
+				requests.put(server+self.userData['userName'], data=json.JSONEncoder().encode(self.userData))
 			return True
 		else:
 			playerData['experiance']+=10*self.userData['level']
