@@ -1,4 +1,5 @@
 import pygame, sys
+import gameLogic
 
 pygame.init()
 
@@ -77,7 +78,9 @@ class Anim:
 
     def getRect(self):
         return self.rect
-    
+   
+level = gameLogic.Dog.level
+experiance = gameLogic.Dog.experiance
     
 def main():
     width, height = 600, 400
@@ -91,6 +94,14 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
         
+        font = pygame.font.Font(None, 20)
+        score = font.render("Level: %s Experience: %s" % level, experiance, 1, (10,10,10))
+        textpos = score.getRect()
+        textpos.centerx = 500
+        textpos.centery = 50
+        screen.blit(score, textpos)
+
+
         screen.fill((0,0,0))
         screen.blit(doggu_image_data[anim.getFrame()],anim.getRect())
         screen.blit(new_ball_img,ball_rect)
