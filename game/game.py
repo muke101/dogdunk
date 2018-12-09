@@ -30,10 +30,10 @@ doggu_image_data = [pygame.image.load(path) for path in sprite_paths]
 ball_image = pygame.image.load("assets/ball_normal.png")
 
 movement_map = {
-    "0": (100,100,100,100),
-    "1": (200,200,400,400),
-    "2": (240,240,380,380),
-    "3": (300,300,220,220)
+    "0": (100,100,100,50),
+    "1": (200,200,400,200),
+    "2": (240,240,380,140),
+    "3": (300,300,220,110)
 }
 
 class Anim:
@@ -64,7 +64,10 @@ class Anim:
    
 level = gameLogic.Dog.level
 experience = gameLogic.Dog.experience
-    
+def offset(off,rect):
+    x, y, w, h = rect
+    return (x + off, y + off, w + off, h + off)
+   
 def main():
     width, height = 600, 400
     size = (width,height)
@@ -76,7 +79,7 @@ def main():
     snap_surface = pygame.surface.Surface((600,400),0,pygame.display)
     ball_rect = 0, 0, 100, 100
     new_ball_img = pygame.transform.scale(ball_image,(100,100))
-    anim = Anim(500,4,200,200,500,500,movement_map)
+    anim = Anim(6,4,200,200,500,500,movement_map)
     doggu_rect = anim.getRect()
     cam.start()
     while True: # Game Loop
@@ -84,19 +87,18 @@ def main():
             if event.type == pygame.QUIT: sys.exit()
         # Check for webcamp input
         cam_snap = cam.get_image()
-        
         font = pygame.font.Font(None, 20)
-        score = font.render("Level: %s Experience: %s" % level, experiance, 1, (10,10,10))
-        textpos = score.getRect()
+        score = font.render("Level: %d Experience: %d" % (level, experience), 1, (10,10,10))
+        textpos = score.get_rect()
         textpos.centerx = 500
         textpos.centery = 50
-        screen.blit(score, textpos)
 
         screen.fill((0,0,0))
         screen.blit(cam_snap,(0,0,300,300))
-
+        screen.blit(score, textpos)
         screen.blit(doggu_image_data[anim.getFrame()],anim.getRect())
-        screen.blit(new_ball_img,ball_rect)
+        screen.blit(new_ball_img,offset(10,anim.getRect()))
         pygame.display.flip()
         anim.update()
 main()
+
