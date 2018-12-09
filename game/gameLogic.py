@@ -30,12 +30,17 @@ class dog:
 		if successProbablity > 0.5:
 			self.experiance+=10*playerData['level'] #recived xp scales with level defeated
 			self.userData['experiance'] = self.experiance
-			if self.experiance >= 30:
+			if self.experiance >= (30*(self.level**2))/3:
 				self.levelUp()
 			else:
 				requests.put(server+userData['userName'], data=json.JSONEncoder().encode(userData))
 			return True
 		else:
+			playerData['experiance']+=10*self.userData['level']
+			if playerData['experiance'] >= (30*(playerData['level']**2))/3:
+				playerData['experiance'] = 0
+				playerData['level']+=1
+			requests.put(server+playerData['userName'], data=json.JSONEncoder().encode(playerData))
 			return False
 
 def login(userName):
@@ -50,13 +55,13 @@ def createUser(userName):
 	userData['userName'] = userName
 	userData['experiance'] = 0
 	userData['level'] = 1 #new dogs have zero experiance and are level 1
-	requests.put(server+userData['userName'], data=json.JSONEncoder.encode(userData))
+	requests.put(server+userData['userName'], data=json.JSONEncoder().encode(userData))
 	Dog = dog(userData)
 
 Dog = dog(json.JSONDecoder().decode(requests.get(server+'muke').text))
 
 def dunker():
-	Dog.dunk(json.JSONDecoder().decode(requests.get(server+'bikeboi').text))
+	return Dog.dunk(json.JSONDecoder().decode(requests.get(server+'bikeboi').text))
 
 
 
