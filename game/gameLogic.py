@@ -14,7 +14,7 @@ class dog:
 		self.jumpHeight = jumpHeight(self.level)
 
 	def jumpHeight(self, level):
-		return 2*np.log(level)+1 #function offset at y0=1 that rises quickly at first but levels off quickly too
+		return np.log(level)+1 #function offset at y0=1 that rises quickly at first but levels off quickly too
 
 	def levelUp(self):
 		self.level = self.userData[level]+=1
@@ -23,10 +23,12 @@ class dog:
 
 	def dunk(self, player):
 		playerJumpHeight = jumpHeight(player[level])
-		heightDifference = np.abs(self.jumpHeight - playerJumpHeight)
-		
-	 #takes the differences in height and calculates an inverse probablity for success
-
+		heightDifference = self.jumpHeight - playerJumpHeight
+		successProbablity = (self.jumpHeight**heightDifference)*random.random() # negative difference reduces chance, positive increases
+		if successProbablity > 0.5:
+			return True
+		else:
+			return False
 
 while True: 
 	if login:
@@ -49,7 +51,10 @@ while True:
 
 while True:
 	if dunk:
-		Dog.dunk(json.decode(requests.get(server+'bikeboi').text))
+		if Dog.dunk(json.decode(requests.get(server+'bikeboi').text)):
+			#carry out dunk
+		else:
+			#display text saying 'failed'
 	if exit:
 		exit()
 
