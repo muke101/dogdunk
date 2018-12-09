@@ -9,7 +9,7 @@ class dog:
 	def __init__(self, userData):
 		self.userData = userData
 		self.level = int(userData['level'])
-		self.experiance = int(userData['experiance'])
+		self.experience = int(userData['experience'])
 		self.jumpHeight = self.calculateJumpHeight(userData['level'])
 
 	def calculateJumpHeight(self, level):
@@ -18,8 +18,8 @@ class dog:
 	def levelUp(self):
 		self.level+=1
 		self.userData['level'] = self.level
-		self.experiance = 0
-		self.userData['experiance'] = self.experiance
+		self.experience = 0
+		self.userData['experience'] = self.experience
 		self.jumpHeight = self.calculateJumpHeight(self.level)
 		requests.put(server+self.userData['userName'], data=json.JSONEncoder().encode(self.userData))
 
@@ -28,17 +28,17 @@ class dog:
 		heightDifference = self.jumpHeight - playerJumpHeight
 		successProbablity = (self.jumpHeight**heightDifference)*random.random() # negative difference reduces chance, positive increases
 		if successProbablity > 0.5:
-			self.experiance+=10*playerData['level'] #recived xp scales with level defeated
-			self.userData['experiance'] = self.experiance
-			if self.experiance >= (30*(self.level**2))/3:
+			self.experience+=10*playerData['level'] #recived xp scales with level defeated
+			self.userData['experience'] = self.experience
+			if self.experience >= (30*(self.level**2))/3:
 				self.levelUp()
 			else:
 				requests.put(server+self.userData['userName'], data=json.JSONEncoder().encode(self.userData))
 			return True
 		else:
-			playerData['experiance']+=10*self.userData['level']
-			if playerData['experiance'] >= (30*(playerData['level']**2))/3:
-				playerData['experiance'] = 0
+			playerData['experience']+=10*self.userData['level']
+			if playerData['experience'] >= (30*(playerData['level']**2))/3:
+				playerData['experience'] = 0
 				playerData['level']+=1
 			requests.put(server+playerData['userName'], data=json.JSONEncoder().encode(playerData))
 			return False
@@ -53,8 +53,8 @@ def login(userName):
 def createUser(userName):
 	userData = {}
 	userData['userName'] = userName
-	userData['experiance'] = 0
-	userData['level'] = 1 #new dogs have zero experiance and are level 1
+	userData['experience'] = 0
+	userData['level'] = 1 #new dogs have zero experience and are level 1
 	requests.put(server+userData['userName'], data=json.JSONEncoder().encode(userData))
 	Dog = dog(userData)
 
