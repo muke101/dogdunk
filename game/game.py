@@ -1,6 +1,12 @@
 import pygame, sys
+import pygame.camera
+import json
+import requests
+from pygame.locals import *
 
 pygame.init()
+pygame.camera.init()
+pygame.font.init()
 
 doggu = pygame.image.load("assets/spr_dog_1.png")
 doggu_rect = doggu.get_rect()
@@ -8,29 +14,6 @@ doggu_rect = doggu.get_rect()
 # Helpers
 def compPos(pos_a,pos_b):
     return pos_a.x == pos_b.x and pos_a.y == pos_b.y
-"""
-class Game:
-    def __init__(self, play_action, stop_action):
-        self.play = play
-        self.stop = stop
-        
-    def runOption(option_name):
-        for opt in options:
-            if opt["name"] == menuOption["name"]:
-                opt
-
-    def runPress(pos):
-        if pos == play_area:
-            play_area.run()
-        else:
-            stop_area.run()
-            
-def mouseHandler(event,state):
-    if state == "menu":
-        if event.type == pygame.MOUSEMOTION:
-            pos = event.pos
-            mainMenu.handle((x,y))
-"""     
 # Actual instances
 # Menu options
 startOption = { "name": "Start Game", "rect": (0,0,600,200) }
@@ -46,10 +29,10 @@ doggu_image_data = [pygame.image.load(path) for path in sprite_paths]
 ball_image = pygame.image.load("assets/ball_normal.png")
 
 movement_map = {
-    "0": (200,200,500,500),
-    "1": (100,100,400,400),
-    "2": (120,120,380,380),
-    "3": (80,80,220,220)
+    "0": (100,100,100,100),
+    "1": (200,200,400,400),
+    "2": (240,240,380,380),
+    "3": (300,300,220,220)
 }
 
 class Anim:
@@ -77,24 +60,32 @@ class Anim:
 
     def getRect(self):
         return self.rect
-    
-    
+
 def main():
     width, height = 600, 400
     size = (width,height)
     screen = pygame.display.set_mode(size)
+    cam_list = pygame.camera.list_cameras()
+    if len(cam_list) < 1:
+        print("No cameras found")
+    cam = pygame.camera.Camera("/dev/video0",(600,400))
+    snap_surface = pygame.surface.Surface((600,400),0,pygame.display)
     ball_rect = 0, 0, 100, 100
     new_ball_img = pygame.transform.scale(ball_image,(100,100))
-    anim = Anim(500,4,0,0,0,0,movement_map)
+    anim = Anim(500,4,200,200,500,500,movement_map)
     doggu_rect = anim.getRect()
+    cam.start()
     while True: # Game Loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
-        
+        # Check for webcamp input
+        cam_snap = cam.get_image()
+            
         screen.fill((0,0,0))
+        screen.blit(cam_snap,(0,0,300,300))
+
         screen.blit(doggu_image_data[anim.getFrame()],anim.getRect())
         screen.blit(new_ball_img,ball_rect)
         pygame.display.flip()
-
         anim.update()
 main()

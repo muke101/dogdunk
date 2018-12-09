@@ -1,9 +1,9 @@
 import imutils
 import cv2
 
-XML_PATH = "/home/bikeboi/Wazz/dogdunk/game/venv/lib/python3.7/site-packages/cv2/data/"
 
 # Initialize important stuff
+XML_PATH = "/home/bikeboi/Wazz/dogdunk/game/venv/lib/python3.7/site-packages/cv2/data/"
 face_cascade = cv2.CascadeClassifier(XML_PATH + 'haarcascade_frontalface_default.xml')
 if not face_cascade:
     print("Could not print face cascade")

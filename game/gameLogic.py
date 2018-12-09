@@ -6,7 +6,7 @@ import random
 server = 'http://0a69cff3.ngrok.io/'
 
 class dog:
-	def init(self, userData):
+	def __init__(self, userData):
 		self.userData = userData
 		self.image = userData[imagepath]
 		self.level = userData[level]
