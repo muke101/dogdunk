@@ -42,27 +42,59 @@ menuOptions = [startOption, quitOption]
 
 sprite_names = ["spr_dog_1.png","spr_dog_2.png","spr_dog_3.png","spr_dog_4.png"]
 sprite_paths = ["assets/" + s for s in sprite_names]
-image_data = [pygame.image.load(path) for path in sprite_paths]
+doggu_image_data = [pygame.image.load(path) for path in sprite_paths]
+ball_image = pygame.image.load("assets/ball_normal.png")
 
-def updateCounter(c,lim):
-    if c >= lim: return 0
-    return c + 1
+movement_map = {
+    "0": (200,200,500,500),
+    "1": (100,100,400,400),
+    "2": (120,120,380,380),
+    "3": (80,80,220,220)
+}
 
+class Anim:
+    def __init__(self,spd,frames,x,y,w,h,move_map):
+        self.counter = 0
+        self.speed = spd
+        self.frame = 0
+        self.frameCount = frames-1
+        self.rect = x, y, w, h
+        self.move_map = move_map
+        
+    def update(self):
+        if self.counter >= self.speed:
+            self.counter = 0
+            if self.frame >= self.frameCount:
+                self.frame = 0
+            else:
+                self.frame += 1
+            self.rect = self.move_map[str(self.frame)]
+        else:
+            self.counter += 1
+
+    def getFrame(self):
+        return self.frame
+
+    def getRect(self):
+        return self.rect
+    
+    
 def main():
     width, height = 600, 400
     size = (width,height)
     screen = pygame.display.set_mode(size)
-    doggu_rect = 0, 0, 300, 300
-    anim_counter = 0
+    ball_rect = 0, 0, 100, 100
+    new_ball_img = pygame.transform.scale(ball_image,(100,100))
+    anim = Anim(500,4,0,0,0,0,movement_map)
+    doggu_rect = anim.getRect()
     while True: # Game Loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
-
-        # Update current game state
-        anim_counter = updateCounter(anim_counter,3)
         
         screen.fill((0,0,0))
-        screen.blit(image_data[anim_counter],doggu_rect)
+        screen.blit(doggu_image_data[anim.getFrame()],anim.getRect())
+        screen.blit(new_ball_img,ball_rect)
         pygame.display.flip()
 
+        anim.update()
 main()
