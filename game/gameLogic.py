@@ -3,26 +3,25 @@ import requests
 import json
 import random
 
-server = 'http://0a69cff3.ngrok.io/'
+server = 'http://36f5229b.ngrok.io/'
 
 class dog:
-	def init(self, userData):
+	def __init__(self, userData):
 		self.userData = userData
-		self.image = userData[imagepath]
-		self.level = userData[level]
-		self.experiance = userData[experiance]
-		self.jumpHeight = jumpHeight(self.level)
+		self.level = int(userData['level'])
+		self.experiance = int(userData['experiance'])
+		self.jumpHeight = self.calculateJumpHeight(userData['level'])
 
-	def jumpHeight(self, level):
+	def calculateJumpHeight(self, level):
 		return np.log(level)+1 #function offset at y0=1 that rises quickly at first but levels off quickly too
 
 	def levelUp(self):
-		self.level = self.userData[level]+1
-		self.jumpHeight = jumpHeight(self.level)
-		requests.put(server+self.userData[userName], data=userData)
+		self.level = self.userData['level']+1
+		self.jumpHeight = self.calculateJumpHeight(self.level)
+		requests.put(server+self.userData['userName'], data=json.JSONEncode.encode(uuserData))
 
-	def dunk(self, player):
-		playerJumpHeight = jumpHeight(player[level])
+	def dunk(self, playerData):
+		playerJumpHeight = self.calculateJumpHeight(playerData['level'])
 		heightDifference = self.jumpHeight - playerJumpHeight
 		successProbablity = (self.jumpHeight**heightDifference)*random.random() # negative difference reduces chance, positive increases
 		if successProbablity > 0.5:
@@ -34,19 +33,22 @@ def login(userName):
 	userData = requests.get(server+userName)
 	if userData.status_code == 404:
 		print('user not found') #repromt for name
-	userData = json.JSONDecoder.decode(userData.text)
+	userData = json.JSONDecoder().decode(userData.text)
 	Dog = dog(userData)
 
 def createUser(userName):
 	userData = {}
-	userData[userName] = userName
-	userData[imagePath] = ''
-	userData[experiance] = 0
-	userData[level] = 1 #new dogs have zero experiance and are level 1
-	requests.put(server+userData[userName], data=userData)
+	userData['userName'] = userName
+	userData['experiance'] = 0
+	userData['level'] = 1 #new dogs have zero experiance and are level 1
+	requests.put(server+userData['userName'], data=json.JSONEncode.encode(userData))
 	Dog = dog(userData)
 
-dunk = dog.dunk(json.JSONDecoder.decode(requests.get(server+'bikeboi').text))
+Dog = dog(json.JSONDecoder().decode(requests.get(server+'muke').text))
+
+def dunker():
+	Dog.dunk(json.JSONDecoder().decode(requests.get(server+'bikeboi').text))
+
 
 
 
