@@ -3,6 +3,7 @@ import pygame.camera
 import json
 import requests
 from pygame.locals import *
+import gameLogic
 
 pygame.init()
 pygame.camera.init()
@@ -60,7 +61,14 @@ class Anim:
 
     def getRect(self):
         return self.rect
+<<<<<<< HEAD
 
+=======
+   
+level = gameLogic.Dog.level
+experiance = gameLogic.Dog.experiance
+    
+>>>>>>> 38449e1c9dd8d9c31dae2b8f8181bb4c6d0c6e86
 def main():
     width, height = 600, 400
     size = (width,height)
@@ -80,7 +88,14 @@ def main():
             if event.type == pygame.QUIT: sys.exit()
         # Check for webcamp input
         cam_snap = cam.get_image()
-            
+        
+        font = pygame.font.Font(None, 20)
+        score = font.render("Level: %s Experience: %s" % level, experiance, 1, (10,10,10))
+        textpos = score.getRect()
+        textpos.centerx = 500
+        textpos.centery = 50
+        screen.blit(score, textpos)
+
         screen.fill((0,0,0))
         screen.blit(cam_snap,(0,0,300,300))
 
