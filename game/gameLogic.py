@@ -17,7 +17,7 @@ class dog:
 		return np.log(level)+1 #function offset at y0=1 that rises quickly at first but levels off quickly too
 
 	def levelUp(self):
-		self.level = self.userData[level]+=1
+		self.level = self.userData[level]+1
 		self.jumpHeight = jumpHeight(self.level)
 		requests.put(server+self.userData[userName], data=userData)
 
@@ -30,33 +30,23 @@ class dog:
 		else:
 			return False
 
-while True: 
-	if login:
-		userName = ''
-		userData = requests.get(server+userName)
-		if userData.status_code == 404:
-			print('user not found') #repromt for name
-		userData = json.decode(userData.text)
-		Dog = dog(userData)
-		break
-	if createUser:
-		userData = {}
-		userData[userName] = ''
-		userData[imagePath] = ''
-		userData[experiance] = 0
-		userData[level] = 1 #new dogs have zero experiance and are level 1
-		requests.put(server+userData[userName], data=userData)
-		Dog = dog(userData)
-		break
+def login(userName):
+	userData = requests.get(server+userName)
+	if userData.status_code == 404:
+		print('user not found') #repromt for name
+	userData = json.JSONDecoder.decode(userData.text)
+	Dog = dog(userData)
 
-while True:
-	if dunk:
-		if Dog.dunk(json.decode(requests.get(server+'bikeboi').text)):
-			#carry out dunk
-		else:
-			#display text saying 'failed'
-	if exit:
-		exit()
+def createUser(userName):
+	userData = {}
+	userData[userName] = userName
+	userData[imagePath] = ''
+	userData[experiance] = 0
+	userData[level] = 1 #new dogs have zero experiance and are level 1
+	requests.put(server+userData[userName], data=userData)
+	Dog = dog(userData)
+
+dunk = dog.dunk(json.JSONDecoder.decode(requests.get(server+'bikeboi').text))
 
 
 
