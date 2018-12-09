@@ -16,15 +16,24 @@ class dog:
 		return np.log(level)+1 #function offset at y0=1 that rises quickly at first but levels off quickly too
 
 	def levelUp(self):
-		self.level = self.userData['level']+1
+		self.level+=1
+		self.userData['level'] = self.level
+		self.experiance = 0
+		self.userData['experiance'] = self.experiance
 		self.jumpHeight = self.calculateJumpHeight(self.level)
-		requests.put(server+self.userData['userName'], data=json.JSONEncode.encode(uuserData))
+		requests.put(server+self.userData['userName'], data=json.JSONEncoder().encode(userData))
 
 	def dunk(self, playerData):
 		playerJumpHeight = self.calculateJumpHeight(playerData['level'])
 		heightDifference = self.jumpHeight - playerJumpHeight
 		successProbablity = (self.jumpHeight**heightDifference)*random.random() # negative difference reduces chance, positive increases
 		if successProbablity > 0.5:
+			self.experiance+=10*playerData['level'] #recived xp scales with level defeated
+			self.userData['experiance'] = self.experiance
+			if self.experiance >= 30:
+				self.levelUp()
+			else:
+				requests.put(server+userData['userName'], data=json.JSONEncoder().encode(userData))
 			return True
 		else:
 			return False
@@ -41,7 +50,7 @@ def createUser(userName):
 	userData['userName'] = userName
 	userData['experiance'] = 0
 	userData['level'] = 1 #new dogs have zero experiance and are level 1
-	requests.put(server+userData['userName'], data=json.JSONEncode.encode(userData))
+	requests.put(server+userData['userName'], data=json.JSONEncoder.encode(userData))
 	Dog = dog(userData)
 
 Dog = dog(json.JSONDecoder().decode(requests.get(server+'muke').text))
