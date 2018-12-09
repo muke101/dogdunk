@@ -61,14 +61,10 @@ class Anim:
 
     def getRect(self):
         return self.rect
-<<<<<<< HEAD
-
-=======
    
 level = gameLogic.Dog.level
-experiance = gameLogic.Dog.experiance
+experience = gameLogic.Dog.experience
     
->>>>>>> 38449e1c9dd8d9c31dae2b8f8181bb4c6d0c6e86
 def main():
     width, height = 600, 400
     size = (width,height)
